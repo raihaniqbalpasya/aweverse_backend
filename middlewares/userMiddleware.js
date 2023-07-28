@@ -9,7 +9,7 @@ module.exports = {
       const token = bearerToken.split("Bearer ")[1];
       const tokenPayload = jwt.verify(
         token,
-        process.env.ACCESS_TOKEN || "secret"
+        process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3"
       );
 
       req.user = await userService.getByMail(tokenPayload.email);
