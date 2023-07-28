@@ -1,6 +1,5 @@
 "use strict";
 
-require("@vercel/postgres");
 require("pg");
 const fs = require("fs");
 const path = require("path");
