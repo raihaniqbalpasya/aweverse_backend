@@ -17,7 +17,11 @@ app.get("/", (req, res) => {
 
 // user routes
 app.get("/api/v1/user", userController.getAll);
-app.get("/api/v1/user/:id", userController.getMyProfile);
+app.get(
+  "/api/v1/user/profile",
+  userMiddleware.authorize,
+  userController.getMyProfile
+);
 app.post("/api/v1/user/register", userController.register);
 app.post("/api/v1/user/login", userController.login);
 app.put(

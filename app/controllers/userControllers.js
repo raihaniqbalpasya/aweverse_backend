@@ -88,7 +88,7 @@ module.exports = {
 
   async getMyProfile(req, res) {
     try {
-      const data = await userService.getById(req.params.id);
+      const data = await userService.getById(req.user.id);
       if (data === null) {
         res.status(404).json({
           status: false,
