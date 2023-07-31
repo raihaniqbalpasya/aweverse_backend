@@ -1,11 +1,15 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const port = 3001;
 const userController = require("./app/controllers/userControllers");
 const userMiddleware = require("./middlewares/userMiddleware");
 
 // database connection
 require("dotenv").config();
+
+// cors
+app.use(cors());
 
 // json parser
 app.use(express.json());
