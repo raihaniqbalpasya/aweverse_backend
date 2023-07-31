@@ -4,6 +4,7 @@ const cors = require("cors");
 const port = 3001;
 const userController = require("./app/controllers/userControllers");
 const userMiddleware = require("./middlewares/userMiddleware");
+const upload = require("./config/multer");
 
 // database connection
 require("dotenv").config();
@@ -28,6 +29,12 @@ app.get(
 );
 app.post("/api/v1/user/register", userController.register);
 app.post("/api/v1/user/login", userController.login);
+app.put(
+  "/api/v1/user/edit-profilePic",
+  userMiddleware.authorize,
+  upload.single("profilePic"),
+  userController.updateProfilePic
+);
 app.put(
   "/api/v1/user/change-password",
   userMiddleware.authorize,

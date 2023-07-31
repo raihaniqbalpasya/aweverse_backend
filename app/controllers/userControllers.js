@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userService = require("../services/userServices");
+const { promisify } = require("util");
+const cloudinary = require("../../config/cloudinary");
+const cloudinaryUpload = promisify(cloudinary.uploader.upload);
+const cloudinaryDelete = promisify(cloudinary.uploader.destroy);
 
 module.exports = {
   async getAll(req, res) {
@@ -100,6 +104,100 @@ module.exports = {
           message: "Successfully get user profile",
           data,
         });
+      }
+    } catch (err) {
+      res.status(422).json({
+        status: false,
+        message: err.message,
+      });
+    }
+  },
+
+  async updateProfilePic(req, res) {
+    try {
+      const requestFile = req.file;
+      const getData = await userService.getById(req.user.id);
+      if (getData === null) {
+        res.status(404).json({
+          status: false,
+          message: "Data not found",
+        });
+      } else {
+        const urlImage = getData.profilePic;
+        if (urlImage === null || urlImage === "") {
+          if (
+            requestFile === null ||
+            requestFile === undefined ||
+            requestFile === ""
+          ) {
+            await userService.update(req.user.id, {
+              profilePic: null,
+            });
+            const data = await userService.getById(req.user.id);
+            res.status(200).json({
+              status: true,
+              message: "Successfully update data",
+              data,
+            });
+          } else {
+            const fileBase64 = requestFile.buffer.toString("base64");
+            const file = `data:${requestFile.mimetype};base64,${fileBase64}`;
+            const result = await cloudinaryUpload(file, {
+              folder: "userProfilePic",
+              resource_type: "image",
+              allowed_formats: ["jpg", "png", "jpeg", "gif", "svg", "webp"],
+            });
+            const url = result.secure_url;
+            await userService.update(req.user.id, {
+              profilePic: url,
+            });
+            const data = await userService.getById(req.user.id);
+            res.status(200).json({
+              status: true,
+              message: "Successfully update data",
+              data,
+            });
+          }
+        } else {
+          // mengambil url gambar dari cloudinary dan menghapusnya
+          const getPublicId =
+            "userProfilePic/" + urlImage.split("/").pop().split(".")[0] + "";
+          await cloudinaryDelete(getPublicId);
+          if (requestFile === null || requestFile === undefined) {
+            await userService.update(req.user.id, {
+              profilePic: null,
+            });
+            const data = await userService.getById(req.user.id);
+            res.status(200).json({
+              status: true,
+              message: "Successfully update data",
+              data,
+            });
+          } else {
+            // mengambil url gambar dari cloudinary dan menghapusnya
+            const getPublicId =
+              "userProfilePic/" + urlImage.split("/").pop().split(".")[0] + "";
+            await cloudinaryDelete(getPublicId);
+            // upload gambar ke cloudinary
+            const fileBase64 = requestFile.buffer.toString("base64");
+            const file = `data:${requestFile.mimetype};base64,${fileBase64}`;
+            const result = await cloudinaryUpload(file, {
+              folder: "userProfilePic",
+              resource_type: "image",
+              allowed_formats: ["jpg", "png", "jpeg", "gif", "svg", "webp"],
+            });
+            const url = result.secure_url;
+            await userService.update(req.user.id, {
+              profilePic: url,
+            });
+            const data = await userService.getById(req.user.id);
+            res.status(200).json({
+              status: true,
+              message: "Successfully update data",
+              data,
+            });
+          }
+        }
       }
     } catch (err) {
       res.status(422).json({
