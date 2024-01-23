@@ -75,7 +75,7 @@ module.exports = {
       const accessToken = jwt.sign(
         { id, name, email },
         process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3",
-        { expiresIn: "3d" }
+        { expiresIn: "1d" }
       );
       res.status(200).json({
         status: true,
