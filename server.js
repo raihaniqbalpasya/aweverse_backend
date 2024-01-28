@@ -21,7 +21,8 @@ app.get("/", (req, res) => {
 });
 
 // user routes
-app.get("/api/v1/user", userController.getAll);
+app.get("/api/v1/user", userMiddleware.authorize, userController.getAll);
+app.get("/api/v1/user/checkTokens", userMiddleware.validateToken);
 app.get(
   "/api/v1/user/profile",
   userMiddleware.authorize,

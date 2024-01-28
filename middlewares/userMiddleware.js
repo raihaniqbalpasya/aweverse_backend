@@ -27,7 +27,34 @@ module.exports = {
         res.status(401).json({ message: "Token Expired" });
         return;
       }
+      res.status(401).json({
+        message: "Anda tidak punya akses (Unauthorized)",
+      });
+    }
+  },
 
+  async validateToken(req, res) {
+    try {
+      const bearerToken = req.headers.authorization;
+      const token = bearerToken.split("Bearer ")[1];
+      const tokenPayload = jwt.verify(
+        token,
+        process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3"
+      );
+
+      const expDate = new Date(tokenPayload.exp * 1000);
+      const date = expDate.toString();
+
+      if (tokenPayload != null) {
+        res.status(200).json({
+          message: "Token is available, until " + date,
+        });
+      }
+    } catch (error) {
+      if (error.message.includes("jwt expired")) {
+        res.status(401).json({ message: "Token has expired" });
+        return;
+      }
       res.status(401).json({
         message: "Anda tidak punya akses (Unauthorized)",
       });
