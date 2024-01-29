@@ -41,18 +41,16 @@ module.exports = {
         token,
         process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3"
       );
-
       const expDate = new Date(tokenPayload.exp * 1000);
-      const date = expDate.toString();
-
       if (tokenPayload != null) {
         res.status(200).json({
-          message: "Token is available, until " + date,
+          tokenStatus: "Valid",
+          dateExpired: expDate,
         });
       }
     } catch (error) {
       if (error.message.includes("jwt expired")) {
-        res.status(401).json({ message: "Token has expired" });
+        res.status(401).json({ tokenStatus: "Expired" });
         return;
       }
       res.status(401).json({
