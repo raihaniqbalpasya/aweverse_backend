@@ -1,10 +1,11 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const userService = require("../services/userServices");
 const { promisify } = require("util");
 const cloudinary = require("../../config/cloudinary");
 const cloudinaryUpload = promisify(cloudinary.uploader.upload);
 const cloudinaryDelete = promisify(cloudinary.uploader.destroy);
+const userService = require("../services/userServices");
 
 module.exports = {
   async getAll(req, res) {
