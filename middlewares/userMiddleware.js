@@ -7,10 +7,7 @@ module.exports = {
     try {
       const bearerToken = req.headers.authorization;
       const token = bearerToken.split("Bearer ")[1];
-      const tokenPayload = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3"
-      );
+      const tokenPayload = jwt.verify(token, process.env.ACCESS_TOKEN);
 
       req.user = await userService.getByMail(tokenPayload.email);
       if (!req.user) {
@@ -37,10 +34,7 @@ module.exports = {
     try {
       const bearerToken = req.headers.authorization;
       const token = bearerToken.split("Bearer ")[1];
-      const tokenPayload = jwt.verify(
-        token,
-        process.env.ACCESS_TOKEN || "o4k5n43n5o3n2p3n5pm3mp99fgnl4dmblwq4m3"
-      );
+      const tokenPayload = jwt.verify(token, process.env.ACCESS_TOKEN);
       const expDate = new Date(tokenPayload.exp * 1000);
       if (tokenPayload != null) {
         res.status(200).json({
