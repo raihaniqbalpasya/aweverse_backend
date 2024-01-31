@@ -1,4 +1,5 @@
 "use strict";
+require("dotenv").config();
 
 require("pg");
 require("@vercel/postgres");
